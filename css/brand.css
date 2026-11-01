@@ -57,7 +57,7 @@ a { color: var(--accent-ink); }
 .btn-accent::after { content: ""; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, .45) 50%, transparent 70%); transform: translateX(-120%); transition: transform .7s var(--ease); }
 .btn-accent:hover { transform: translateY(-2px); box-shadow: 0 16px 40px -10px rgba(244, 180, 26, .75); filter: none; }
 .btn-accent:hover::after { transform: translateX(120%); }
-.btn-ghost { --bs-btn-border-color: rgba(255, 255, 255, .35); --bs-btn-hover-bg: rgba(255, 255, 255, .12); --bs-btn-hover-color: #fff; --bs-btn-hover-border-color: #fff; --bs-btn-active-bg: rgba(255, 255, 255, .18); --bs-btn-active-color: #fff; backdrop-filter: blur(6px); }
+.btn-ghost { --bs-btn-bg: rgba(14, 12, 10, .78); --bs-btn-border-color: rgba(255, 255, 255, .35); --bs-btn-hover-bg: rgba(255, 255, 255, .12); --bs-btn-hover-color: #fff; --bs-btn-hover-border-color: #fff; --bs-btn-active-bg: rgba(255, 255, 255, .18); --bs-btn-active-color: #fff; }
 .btn-ghost-dark { --bs-btn-color: var(--ink); --bs-btn-border-color: var(--line); --bs-btn-hover-bg: rgba(255, 255, 255, .1); --bs-btn-hover-color: #fff; --bs-btn-hover-border-color: #fff; }
 .btn-link-quiet { color: var(--accent-ink); }
 .btn-link-quiet:hover { color: #fff; }
@@ -220,3 +220,5 @@ html.is-loading .bh-copy--1 > * { animation: none; opacity: 0; }
 .footer-brand--logo img { border-radius: 50%; background: #fff; }
 
 @media (prefers-reduced-motion: reduce) { .bh-scroll i { animation: none; } }
+
+@supports (overflow: clip) { body { overflow-x: clip; } }

@@ -626,11 +626,11 @@
     const pre = $('#preloader');
     if (!pre || !root.classList.contains('js-preload')) return;
     const ring = $('#preloaderRing'), count = $('#preloaderCount');
-    const MIN = 1700, MAX = 5000, C = 352, t0 = performance.now();
+    const MIN = 1700, MAX = Number(pre.dataset.max) || 5000, C = 352, t0 = pre.dataset.max ? 0 : performance.now(); // data-max sites time from navigation start, so slow script downloads don't extend the wait
     let ready = false, leaving = false;
     const loaded = document.readyState === 'complete' ? Promise.resolve() : new Promise((r) => window.addEventListener('load', r, { once: true }));
     Promise.all([loaded, document.fonts ? document.fonts.ready : null]).then(() => { ready = true; });
-    setTimeout(() => { ready = true; }, MAX);
+    setTimeout(() => { ready = true; }, pre.dataset.max ? Math.max(0, MAX - performance.now()) : MAX);
     const leave = () => {
       leaving = true;
       pre.classList.add('is-leaving');

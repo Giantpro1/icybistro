@@ -13,6 +13,11 @@
   if (!root || !canvas) return;
 
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const debug = /[?&]debug=1/.test(location.search);
+  const dbg = (m) => {
+    try { console.error('[burger]', m); if (!debug) return; let b = document.getElementById('burgerDebug'); if (!b) { b = document.createElement('pre'); b.id = 'burgerDebug'; b.style.cssText = 'position:fixed;left:0;right:0;bottom:0;max-height:40vh;overflow:auto;margin:0;padding:8px;background:#000;color:#0f0;font:11px/1.3 monospace;z-index:9999;white-space:pre-wrap'; document.body.appendChild(b); } b.textContent += m + '\n'; } catch (e) { /* ignore */ }
+  };
+  if (debug) addEventListener('error', (e) => dbg('JS error: ' + e.message + ' @' + (e.filename || '').split('/').pop() + ':' + e.lineno));
   const fallback = () => { root.classList.add('no-webgl', 'is-static'); };
   if (!window.THREE) return fallback();
 
@@ -41,7 +46,7 @@
   const camera = new T.PerspectiveCamera(32, 1, 0.1, 80);
 
   /* ---------- studio environment (reflections only) ---------- */
-  (function buildEnv() {
+  try { (function buildEnv() {
     const pm = new T.PMREMGenerator(renderer);
     const env = new T.Scene();
     env.background = new T.Color(0x0b0908);
@@ -56,7 +61,7 @@
     env.add(new T.Mesh(new T.SphereGeometry(40, 16, 12), new T.MeshBasicMaterial({ color: 0x14100d, side: T.BackSide })));
     scene.environment = pm.fromScene(env, 0.035).texture;
     pm.dispose();
-  })();
+  })(); } catch (e) { dbg('env map skipped: ' + e.message); }
 
   /* ---------- lights ---------- */
   const key = new T.DirectionalLight(0xffdca8, 1.5); key.position.set(5, 9, 7); scene.add(key);
@@ -271,16 +276,16 @@
     target = root.classList.contains('is-static') ? 1 : clamp(-rect.top / run);
   }
   if (reduceMotion) root.classList.add('is-static');
-  addEventListener('scroll', readScroll, { passive: true }); addEventListener('resize', readScroll); readScroll();
+  addEventListener('scroll', readScroll, { passive: true }); addEventListener('resize', readScroll); readScroll(); sp = target;
 
   /* ---------- frame ---------- */
   const win = (p, a, b, f) => clamp(Math.min((p - a) / f, (b - p) / f, 1));
-  let visible = true, introT0 = null, last = performance.now() / 1000;
+  let visible = true, introT0 = null, last = performance.now() / 1000; const bootT = last;
   new IntersectionObserver((e) => { visible = e[0].isIntersecting; if (visible) tick(); }, { threshold: 0 }).observe(root);
 
   function frame(now) {
     const dt = Math.min(0.05, now - last); last = now;
-    if (introT0 === null && (reduceMotion || !document.documentElement.classList.contains('is-loading'))) introT0 = now;
+    if (introT0 === null && (reduceMotion || !document.documentElement.classList.contains('is-loading') || now - bootT > 2.2)) introT0 = now;
     const it = introT0 === null ? 0 : now - introT0;
     sp += (target - sp) * (1 - Math.exp(-dt * (reduceMotion ? 60 : 6.5)));
     const p = sp;
@@ -334,9 +339,12 @@
   }
 
   let raf = 0;
-  function tick() { cancelAnimationFrame(raf); if (!visible || document.hidden) return; raf = requestAnimationFrame((ms) => { frame(ms / 1000); tick(); }); }
+  let failed = false;
+  function bail(e) { if (failed) return; failed = true; dbg('render failed: ' + (e && e.message || e)); cancelAnimationFrame(raf); root.classList.add('no-webgl', 'is-static'); }
+  canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); bail('context lost'); });
+  function tick() { cancelAnimationFrame(raf); if (failed || !visible || document.hidden) return; raf = requestAnimationFrame((ms) => { try { frame(ms / 1000); } catch (e) { return bail(e); } tick(); }); }
   document.addEventListener('visibilitychange', tick);
   root.classList.add('is-ready');
-  frame(performance.now() / 1000); tick();
+  try { frame(performance.now() / 1000); } catch (e) { bail(e); } tick();
   window.__burger = { layers: LAYERS.length, setProgress: (v) => { target = clamp(v); sp = target; } };
 })();
