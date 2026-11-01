@@ -259,7 +259,7 @@
     camera.aspect = w / h;
     camera.clearViewOffset();
     if (w / h >= 0.95) camera.setViewOffset(w, h, -w * 0.17, 0, w, h);       // desktop: burger on the right
-    else camera.setViewOffset(w, h, 0, h * 0.14, w, h);                       // portrait: burger up, copy below
+    else camera.setViewOffset(w, h, 0, h * 0.2, w, h);                        // portrait: burger up, copy below
     camera.updateProjectionMatrix();
   }
   new ResizeObserver(resize).observe(stage); resize();
@@ -267,7 +267,7 @@
   /* scroll progress through the runway */
   let target = 0, sp = 0;
   function readScroll() {
-    const rect = root.getBoundingClientRect(), run = Math.max(1, root.offsetHeight - window.innerHeight);
+    const rect = root.getBoundingClientRect(), run = Math.max(1, root.offsetHeight - stage.clientHeight);
     target = root.classList.contains('is-static') ? 1 : clamp(-rect.top / run);
   }
   if (reduceMotion) root.classList.add('is-static');
@@ -311,7 +311,7 @@
     LAYERS.forEach((L, i) => { top = Math.max(top, L.stackY + L.b.h + i * GAP * (1 - clamp(easeOutBack(clamp((p - (0.035 + i * 0.07)) / 0.24)), 0, 1))); });
     const tanH = Math.tan(T.MathUtils.degToRad(camera.fov / 2)), asp = camera.aspect;
     const spanH = top + 2.2, spanW = lerp(6.4, 7.2, asm);
-    const dist = Math.max(spanH * 1.08 / (2 * tanH), spanW / (2 * tanH * asp));
+    const portrait = asp < 0.95, dist = Math.max(spanH * (portrait ? 1.6 : 1.08) / (2 * tanH), spanW / (2 * tanH * asp));
     const ly = top * 0.5 + 0.1;
     camera.position.set(0, ly + lerp(2.0, 1.7, asm) + top * 0.08, dist); camera.lookAt(0, ly, 0);
 

@@ -3,7 +3,7 @@
 Static site (Bootstrap 5, HTML, CSS, vanilla JS). No build step.
 
 ## Run
-Needs `../shared/` next to this folder. From the project root: `python3 -m http.server 8000`, then open `http://localhost:8000/icyblast/`. Double-clicking index.html also loads the page (tested), but use the local server for presenting: font preloads log harmless warnings over file://
+Self-contained: this folder holds everything (including `shared/`). Run `python3 -m http.server 8000` inside it and open `http://localhost:8000/`. On Vercel, set the project Root Directory to this folder. Double-clicking index.html also loads the page (tested), but use the local server for presenting: font preloads log harmless warnings over file://
 
 ## Present
 Scroll-built 3D burger hero (it floats apart, stacks as you scroll, and separates again when you scroll back) → three signature plates (quick add) → Family Tower → menu (filters, search, cart, demo checkout) → reservations → events → gallery → contact. Say clearly that prices are placeholders and nothing is sent anywhere.
