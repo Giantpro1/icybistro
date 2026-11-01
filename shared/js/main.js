@@ -1,17 +1,18 @@
 /* ==========================================================================
    main.js — application logic (vanilla ES6+, no dependencies besides Bootstrap's JS)
-   Content/config lives in menu-data.js. Backend hooks live in `services` below.
+   One engine, two independent sites: each brand folder supplies its own data.js (RD_DATA). Backend hooks live in `services` below.
    Sections:
    1  Utilities            6  Cart & checkout         11 Reveal on scroll
    2  Services (backend)   7  Demo forms              12 Boot
    3  State                8  Gallery & lightbox
-   4  Brand switching      9  Hero & kitchen video
+   4  Menu filters         9  Hero & kitchen video
    5  Menu                 10 Navigation & contact
    ========================================================================== */
 (function () {
   'use strict';
 
-  const { CONFIG, CATEGORIES, ITEMS, FLAG_TEXT } = window.RD_DATA;
+  const { CONFIG, CATEGORIES, ITEMS, FLAG_TEXT, GALLERY, GALLERY_FILTERS } = window.RD_DATA;
+  const BRAND = CONFIG.brand;
   const ASSETS = window.RD_ASSETS || {};
   const ITEM_MAP = Object.fromEntries(ITEMS.map((i) => [i.id, i]));
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -49,8 +50,8 @@
   };
 
   const store = {
-    get(key, fallback) { try { const v = localStorage.getItem('rd.' + key); return v == null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
-    set(key, val) { try { localStorage.setItem('rd.' + key, JSON.stringify(val)); } catch (e) { /* storage unavailable: demo still works */ } }
+    get(key, fallback) { try { const v = localStorage.getItem('rd.' + BRAND.key + '.' + key); return v == null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+    set(key, val) { try { localStorage.setItem('rd.' + BRAND.key + '.' + key, JSON.stringify(val)); } catch (e) { /* storage unavailable: demo still works */ } }
   };
 
   function toast(message, icon = 'bi-check2-circle') {
@@ -91,7 +92,6 @@
 
   /* 3 — State -------------------------------------------------------------- */
   const state = {
-    brand: store.get('brand', 'icy') === 'cafe' ? 'cafe' : 'icy',
     category: 'all',
     query: '',
     fulfilment: store.get('fulfilment', 'collection') === 'delivery' ? 'delivery' : 'collection',
@@ -111,18 +111,10 @@
   }
   const lineKey = (id, variant) => id + '|' + (variant || '');
 
-  /* 4 — Brand switching ---------------------------------------------------- */
-  function setBrand(brand, opts = {}) {
-    if (!CONFIG.brands[brand]) return;
-    const changed = brand !== state.brand;
-    state.brand = brand;
-    if (changed || opts.resetFilters) { state.category = opts.category || 'all'; if (!opts.keepQuery) { state.query = ''; $('#menuSearch').value = ''; } }
-    else if (opts.category) state.category = opts.category;
-    document.body.dataset.brand = brand;
-    store.set('brand', brand);
-    $$('[data-brand-switch]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.brandSwitch === brand)));
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.content = brand === 'cafe' ? '#2a130c' : '#16120f';
+  /* 4 — Menu filters ------------------------------------------------------ */
+  function setCategory(category, opts = {}) {
+    state.category = CATEGORIES.some((c) => c.id === category) ? category : 'all';
+    if (opts.resetQuery) { state.query = ''; $('#menuSearch').value = ''; }
     renderCategoryChips();
     renderMenu();
   }
@@ -136,68 +128,60 @@
   }
 
   /* 5 — Menu --------------------------------------------------------------- */
-  const catList = () => CATEGORIES[state.brand];
-  const catLabel = (brand, id) => (CATEGORIES[brand].find((c) => c.id === id) || {}).label || '';
+  const catLabel = (id) => (CATEGORIES.find((c) => c.id === id) || {}).label || '';
 
   function renderCategoryChips() {
     const wrap = $('#categoryChips');
-    const inBrand = ITEMS.filter((i) => i.brand === state.brand);
+    const inBrand = ITEMS;
     const make = (id, label, count) => h('button', {
       type: 'button', class: 'chip', 'aria-pressed': String(state.category === id), dataset: { cat: id },
       onclick: () => { state.category = id; renderCategoryChips(); renderMenu(); }
     }, label + ' (' + count + ')');
-    wrap.replaceChildren(make('all', 'All', inBrand.length), ...catList().map((c) => make(c.id, c.label, inBrand.filter((i) => i.cat === c.id).length)));
+    wrap.replaceChildren(make('all', 'All', inBrand.length), ...CATEGORIES.map((c) => make(c.id, c.label, inBrand.filter((i) => i.cat === c.id).length)));
   }
 
   function matches(item, q) {
     if (!q) return true;
-    const hay = (item.name + ' ' + item.desc + ' ' + catLabel(item.brand, item.cat)).toLowerCase();
+    const hay = (item.name + ' ' + item.desc + ' ' + catLabel(item.cat)).toLowerCase();
     return q.toLowerCase().split(/\s+/).filter(Boolean).every((w) => hay.includes(w));
   }
 
   function renderMenu() {
     const grid = $('#menuGrid');
     const q = state.query.trim();
-    const list = ITEMS.filter((i) => i.brand === state.brand && (state.category === 'all' || i.cat === state.category) && matches(i, q));
+    const list = ITEMS.filter((i) => (state.category === 'all' || i.cat === state.category) && matches(i, q));
     grid.replaceChildren(...list.map((item) => h('div', { class: 'col-sm-6 col-xl-4' }, dishCard(item))));
 
     const empty = $('#menuEmpty');
     empty.hidden = list.length > 0;
     grid.hidden = list.length === 0;
-    const brandName = CONFIG.brands[state.brand].name;
-    const catText = state.category === 'all' ? 'all categories' : catLabel(state.brand, state.category);
+    const brandName = BRAND.name;
+    const catText = state.category === 'all' ? 'all categories' : catLabel(state.category);
     $('#menuCount').textContent = list.length
       ? `Showing ${list.length} ${plural(list.length, 'item', 'items')} from ${brandName}, ${catText}${q ? ` matching “${q}”` : ''}.`
       : '';
 
     if (!list.length) {
       $('#menuEmptyText').textContent = q ? `No ${brandName} items match “${q}”.` : `There are no items in ${catText} yet.`;
-      const other = state.brand === 'icy' ? 'cafe' : 'icy';
-      const otherCount = q ? ITEMS.filter((i) => i.brand === other && matches(i, q)).length : 0;
-      const btn = $('#searchOther');
-      btn.hidden = !otherCount;
-      if (otherCount) {
-        btn.textContent = `Search ${CONFIG.brands[other].name} instead (${otherCount})`;
-        btn.onclick = () => setBrand(other, { keepQuery: true });
-      }
     }
   }
 
   function dishCard(item) {
     const variantState = { label: item.variants ? item.variants[0].label : null };
-    const priceFor = () => (item.variants ? item.variants.find((v) => v.label === variantState.label).price : item.price);
+    const priceFor = () => (item.variants ? item.variants.find((v) => v.label === variantState.label).price : (item.price != null ? item.price : item.demoPrice));
+    const isDemo = item.price == null && item.demoPrice != null && !item.variants;
     const priceEl = h('span');
     const paintPrice = () => {
       const p = priceFor();
-      priceEl.className = p == null ? 'dish__price dish__price--tbc' : 'dish__price';
-      priceEl.textContent = p == null ? 'Price to be confirmed' : fmt(p);
+      priceEl.className = p == null ? 'dish__price dish__price--tbc' : 'dish__price' + (isDemo ? ' dish__price--demo' : '');
+      priceEl.replaceChildren(...[p == null ? 'Price to be confirmed' : fmt(p), isDemo ? h('small', { text: 'Demo price' }) : null].filter(Boolean));
     };
     paintPrice();
 
-    const cat = CATEGORIES[item.brand].find((c) => c.id === item.cat);
+    const cat = CATEGORIES.find((c) => c.id === item.cat) || {};
     const media = item.image
       ? h('div', { class: 'dish__media' }, picture(item.image, item.alt || item.name, '(min-width:1200px) 380px, (min-width:576px) 45vw, 92vw', { style: item.focus ? `object-position:${item.focus}` : null }))
-      : h('div', { class: 'dish__tile', 'aria-hidden': 'true' }, h('span', { text: 'Photo coming soon' }), h('i', { class: 'bi ' + cat.icon }));
+      : null;
 
     const badges = h('div', { class: 'dish__badges' },
       item.featured ? h('span', { class: 'badge-demo', text: 'Signature' }) : null,
@@ -212,11 +196,11 @@
           h('span', { text: `${v.label} · ${fmt(v.price)}` }))));
     }
 
-    return h('article', { class: 'dish', 'aria-label': item.name },
+    return h('article', { class: 'dish' + (item.image ? '' : ' dish--text'), 'aria-label': item.name },
       media,
       h('div', { class: 'dish__body' },
         badges.childNodes.length ? badges : null,
-        h('h3', { class: 'dish__name', text: item.name }),
+        h('h3', { class: 'dish__name' }, item.image ? null : h('i', { class: 'bi ' + (cat.icon || 'bi-circle'), 'aria-hidden': 'true' }), item.name),
         h('p', { class: 'dish__desc', text: item.desc }),
         item.info ? h('p', { class: 'dish__flag' }, h('i', { class: 'bi bi-info-circle', 'aria-hidden': 'true' }), h('span', { text: item.info })) : null,
         item.flag ? h('p', { class: 'dish__flag' }, h('i', { class: 'bi bi-exclamation-circle', 'aria-hidden': 'true' }), h('span', { text: FLAG_TEXT[item.flag] })) : null,
@@ -229,7 +213,7 @@
   /* 6 — Cart & checkout ---------------------------------------------------- */
   function priceOfLine(line) {
     const item = ITEM_MAP[line.id];
-    return item.variants ? item.variants.find((v) => v.label === line.variant).price : item.price;
+    return item.variants ? item.variants.find((v) => v.label === line.variant).price : (item.price != null ? item.price : (item.demoPrice != null ? item.demoPrice : null));
   }
 
   function addToCart(id, variant) {
@@ -263,16 +247,16 @@
   function persistCart() { store.set('cart', state.cart.map(({ id, variant, qty }) => ({ id, variant, qty }))); }
 
   function computeTotals() {
-    let subtotal = 0, tbcItems = 0, count = 0;
+    let subtotal = 0, tbcItems = 0, count = 0, demoItems = 0;
     for (const l of state.cart) {
       count += l.qty;
       const p = priceOfLine(l);
-      if (p == null) tbcItems += l.qty; else subtotal += p * l.qty;
+      if (p == null) tbcItems += l.qty; else { subtotal += p * l.qty; if (ITEM_MAP[l.id].price == null && !ITEM_MAP[l.id].variants) demoItems += l.qty; }
     }
     const delivering = state.fulfilment === 'delivery';
     const feeConfigured = CONFIG.deliveryFee != null;
     const fee = delivering && feeConfigured ? CONFIG.deliveryFee : 0;
-    return { subtotal, tbcItems, count, delivering, feeTbc: delivering && !feeConfigured, fee, total: subtotal + fee };
+    return { subtotal, tbcItems, demoItems, count, delivering, feeTbc: delivering && !feeConfigured, fee, total: subtotal + fee };
   }
 
   function totalsRows(t) {
@@ -282,6 +266,7 @@
     rows.push(row('Total', fmt(t.total), 'grand'));
     const notes = [];
     if (t.tbcItems) notes.push(`Excludes ${t.tbcItems} ${plural(t.tbcItems, 'item', 'items')} with a price to be confirmed.`);
+    if (t.demoItems) notes.push(`Includes ${t.demoItems} ${plural(t.demoItems, 'item', 'items')} at demo prices, not real prices.`);
     if (t.feeTbc) notes.push('Delivery fee is not included yet.');
     if (notes.length) rows.push(h('div', null, h('dt', { class: 'visually-hidden', text: 'Notes' }), h('dd', { class: 'tbc-note', text: notes.join(' ') })));
     return rows;
@@ -302,7 +287,7 @@
       const p = priceOfLine(l);
       return h('li', { class: 'cart-line' },
         h('div', null, h('div', { class: 'cart-line__name', text: item.name }),
-          l.variant ? h('div', { class: 'cart-line__meta', text: l.variant }) : null),
+          l.variant ? h('div', { class: 'cart-line__meta', text: l.variant }) : (item.price == null && item.demoPrice != null ? h('div', { class: 'cart-line__meta', text: 'Demo price' }) : null)),
         h('div', { class: 'cart-line__price' + (p == null ? ' cart-line__price--tbc' : ''), text: p == null ? 'Price TBC' : fmt(p * l.qty) }),
         h('div', { class: 'cart-line__ctrl' },
           h('div', { class: 'qty', role: 'group', 'aria-label': `Quantity for ${item.name}` },
@@ -542,25 +527,6 @@
   }
 
   /* 8 — Gallery & lightbox ------------------------------------------------- */
-  const GALLERY = [
-    { name: 'food-family-tower', cat: 'food', caption: 'The Family Tower', alt: 'A tiered wooden stand loaded with burgers, fries, waffles and chicken' },
-    { name: 'venue-ceiling', cat: 'space', caption: 'Inside Bistro 24 Café', alt: 'Warm ceiling lights, curtains and wooden seating inside the café' },
-    { name: 'food-double-burger', cat: 'food', caption: 'Double burger & fries', alt: 'Double burger with melted cheese on a plate of fries' },
-    { name: 'drink-strawberry-shake', cat: 'drinks', caption: 'Strawberry waffle shake', alt: 'A tall strawberry milkshake topped with a waffle and whipped cream' },
-    { name: 'food-loaded-fries', cat: 'food', caption: 'Loaded fries', alt: 'Loaded fries with melted cheese, sauce and ketchup' },
-    { name: 'venue-table', cat: 'space', caption: 'A table by the window', alt: 'Round wooden table with pampas grass and curtains behind' },
-    { name: 'food-wings-chips', cat: 'food', caption: 'Chicken & chips', alt: 'Fried chicken with chips in a wire basket and a bowl of ketchup' },
-    { name: 'drink-frozen-cocktail', cat: 'drinks', caption: 'Frozen cocktail at the bar', alt: 'A frozen cocktail in a coupe glass on the café bar' },
-    { name: 'food-waffle-burger', cat: 'food', caption: 'Waffle burger', alt: 'A waffle sandwich with lettuce and cheese on a black plate' },
-    { name: 'venue-logo-wall', cat: 'space', caption: 'The Bistro 24 wall', alt: 'The illuminated Bistro 24 sign above lounge seating' },
-    { name: 'kitchen-wings', cat: 'food', caption: 'Wings from the kitchen', alt: 'Wings being handled in gloved hands in the kitchen' },
-    { name: 'venue-pampas', cat: 'space', caption: 'Table styling', alt: 'Pampas grass in a black vase beside a board game on a wooden table' },
-    { name: 'venue-room', cat: 'space', caption: 'The seating area', alt: 'Chairs, tables and warm lighting in the café' },
-    { name: 'venue-lounge', cat: 'space', caption: 'Lounge corner', alt: 'Lounge seating and cushions beneath the Bistro 24 sign' },
-    { name: 'venue-counter', cat: 'space', caption: 'Counter and kitchen', alt: 'The wood-panelled counter and kitchen area' }
-  ];
-  const GALLERY_FILTERS = [['all', 'All'], ['food', 'Food'], ['drinks', 'Drinks'], ['space', 'The space']];
-
   const lb = { dlg: null, list: [], index: 0, trigger: null };
 
   function initGallery() {
@@ -628,6 +594,7 @@
   /* 9 — Hero & kitchen video ---------------------------------------------- */
   function initVideos() {
     const hero = $('#heroVideo');
+    if (!hero) return;
     const heroSection = $('#home');
     const heroBtn = $('#heroToggle');
     const paintHero = () => {
@@ -651,25 +618,99 @@
         if (e.isIntersecting) hero.play().catch(() => {}); else hero.pause();
       }, { threshold: 0.05 }).observe(heroSection);
     }
+  }
 
+  /* 9b — Premium layer: preloader, scroll progress, story ------------------ */
+  function initPreloader() {
+    const root = document.documentElement;
+    const pre = $('#preloader');
+    if (!pre || !root.classList.contains('js-preload')) return;
+    const ring = $('#preloaderRing'), count = $('#preloaderCount');
+    const MIN = 1700, MAX = 5000, C = 352, t0 = performance.now();
+    let ready = false, leaving = false;
+    const loaded = document.readyState === 'complete' ? Promise.resolve() : new Promise((r) => window.addEventListener('load', r, { once: true }));
+    Promise.all([loaded, document.fonts ? document.fonts.ready : null]).then(() => { ready = true; });
+    setTimeout(() => { ready = true; }, MAX);
+    const leave = () => {
+      leaving = true;
+      pre.classList.add('is-leaving');
+      root.classList.remove('is-loading');
+      setTimeout(() => { root.classList.remove('js-preload'); pre.remove(); }, 1400);
+    };
+    const tick = (now) => {
+      const t = Math.min(1, (now - t0) / MIN);
+      const p = Math.min(1 - Math.pow(1 - t, 3), ready ? 1 : 0.92);
+      ring.style.strokeDashoffset = String(C * (1 - p));
+      count.textContent = String(Math.round(p * 100));
+      if (p >= 1 && !leaving) setTimeout(leave, 250); else if (!leaving) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  function initScrollProgress() {
+    const bar = $('#scrollProgress');
+    if (!bar) return;
+    let queued = false;
+    const paint = () => {
+      queued = false;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.transform = `scaleX(${max > 0 ? Math.min(1, window.scrollY / max) : 0})`;
+    };
+    window.addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(paint); } }, { passive: true });
+    window.addEventListener('resize', paint);
+    paint();
+  }
+
+  /** "A day at the table": the sticky stage cross-fades as each step scrolls past. */
+  function initStory() {
+    const stage = $('#storyStage');
+    if (!stage) return;
+    const steps = $$('.story__step');
+    const layers = $$('.story__layer', stage);
+    const now = $('#storyNow');
     const kv = $('#kitchenVideo');
     const kBtn = $('#kitchenToggle');
+    const kIndex = layers.indexOf(kv);
+    let active = -1, kUserPaused = false, queued = false;
+
     const paintK = () => {
       const playing = !kv.paused;
       kBtn.setAttribute('aria-label', playing ? 'Pause kitchen video' : 'Play kitchen video');
       kBtn.firstElementChild.className = 'bi ' + (playing ? 'bi-pause-fill' : 'bi-play-fill');
     };
-    let kUserPaused = true; // starts paused until it scrolls into view
-    kv.addEventListener('play', paintK); kv.addEventListener('pause', paintK);
+    const syncKitchen = () => {
+      const onK = active === kIndex;
+      kBtn.hidden = !onK;
+      if (onK && !kUserPaused && !reducedMotion) kv.play().catch(() => {}); else kv.pause();
+    };
+    kv.addEventListener('play', paintK);
+    kv.addEventListener('pause', paintK);
     $('source', kv).addEventListener('error', () => { kBtn.hidden = true; });
-    kBtn.addEventListener('click', () => { if (kv.paused) { kUserPaused = false; kv.play().catch(() => {}); } else { kUserPaused = true; kv.pause(); } });
-    if ('IntersectionObserver' in window && !reducedMotion) {
-      kUserPaused = false;
-      new IntersectionObserver(([e]) => {
-        if (kUserPaused) return;
-        if (e.isIntersecting) kv.play().catch(() => {}); else kv.pause();
-      }, { threshold: 0.45 }).observe(kv);
-    }
+    kBtn.addEventListener('click', () => {
+      if (kv.paused) { kUserPaused = false; kv.play().catch(() => {}); } else { kUserPaused = true; kv.pause(); }
+    });
+
+    const set = (i) => {
+      if (i === active) return;
+      active = i;
+      steps.forEach((s, j) => s.classList.toggle('is-active', j === i));
+      layers.forEach((l, j) => l.classList.toggle('is-active', j === i));
+      now.textContent = String(i + 1).padStart(2, '0');
+      syncKitchen();
+    };
+    const compute = () => {
+      queued = false;
+      const mobile = window.innerWidth < 992;
+      const sb = stage.getBoundingClientRect().bottom;
+      const ref = mobile ? sb + (window.innerHeight - sb) * 0.2 : window.innerHeight * 0.5;
+      let idx = 0;
+      steps.forEach((s, j) => { if (s.getBoundingClientRect().top <= ref) idx = j; });
+      set(idx);
+    };
+    const queue = () => { if (!queued) { queued = true; requestAnimationFrame(compute); } };
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue);
+    compute();
   }
 
   /* 10 — Navigation & contact --------------------------------------------- */
@@ -687,13 +728,8 @@
       }, { once: true });
       bootstrap.Collapse.getOrCreateInstance(collapseEl).hide();
     }));
-    $$('[data-brand-switch]').forEach((b) => b.addEventListener('click', () => {
-      setBrand(b.dataset.brandSwitch);
-      const c = bootstrap.Collapse.getInstance(collapseEl);
-      if (b.closest('.brand-switch') && c && collapseEl.classList.contains('show')) c.hide();
-    }));
     $$('[data-explore]').forEach((b) => b.addEventListener('click', () => {
-      setBrand(b.dataset.explore, { category: b.dataset.cat || 'all', resetFilters: true });
+      setCategory(b.dataset.cat || 'all', { resetQuery: true });
       scrollToMenu();
     }));
     $$('button[data-scroll-menu]').forEach((b) => b.addEventListener('click', () => {
@@ -750,13 +786,16 @@
 
   /* 12 — Boot -------------------------------------------------------------- */
   function init() {
+    initPreloader();
     initNav();
     initCart();
     initForms();
     initGallery();
     initVideos();
+    initStory();
+    initScrollProgress();
     renderContactConfig();
-    setBrand(state.brand, { resetFilters: true });
+    setCategory('all');
     renderCart();
     showView('cart', { focus: false });
     initReveal();

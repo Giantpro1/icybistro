@@ -1,59 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Icy Blast Bistro &amp; Bistro 24 Café — Website Demo</title>
-  <meta name="description" content="Website demo for Icy Blast Bistro and Bistro 24 Café: menus, ordering flow, reservations, cocktail service and event enquiries. Demonstration only.">
-  <meta name="theme-color" content="#16120f">
+  <title>Icyblast Bistro — Website Demo</title>
+  <meta name="description"
+    content="Website demo for Icyblast Bistro: loaded fries, stacked burgers, chicken, the Family Tower and cocktails, with a demo ordering flow, reservations and event enquiries. Demonstration only.">
+  <meta name="theme-color" content="#0a0908">
 
-  <!-- Open Graph placeholders: replace image/url once the final domain is known -->
+  <!-- Open Graph placeholders: replace url once the final domain is known -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Icy Blast Bistro & Bistro 24 Café — Website Demo">
-  <meta property="og:description" content="Good food. Great drinks. Unforgettable moments. (Demonstration website.)">
-  <meta property="og:image" content="assets/images/hero-poster.jpg">
+  <meta property="og:title" content="Icyblast Bistro — Website Demo">
+  <meta property="og:description" content="Loaded. Stacked. Ice cold. (Demonstration website.)">
+  <meta property="og:image" content="assets/images/food-family-tower.webp">
   <meta property="og:url" content="">
 
-  <link rel="preload" href="assets/fonts/fraunces-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="assets/fonts/hanken-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="assets/images/hero-poster.jpg" as="image">
+  <link rel="preload" href="assets/fonts/bricolage-grotesque-latin-wght-normal.woff2" as="font" type="font/woff2"
+    crossorigin>
+  <link rel="preload" href="shared/fonts/hanken-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2"
+    crossorigin>
   <link rel="icon" type="image/webp" href="assets/images/logo-icy-blast-256.webp">
-  <link rel="stylesheet" href="assets/vendor/bootstrap/bootstrap.min.css">
-  <link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="shared/vendor/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="shared/vendor/bootstrap-icons/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="shared/css/base.css">
+  <link rel="stylesheet" href="css/brand.css">
+  <script>try { if (!matchMedia("(prefers-reduced-motion: reduce)").matches) { document.documentElement.classList.add("js-preload", "is-loading") } } catch (e) { }</script>
 </head>
 
-<body data-brand="icy">
+<body>
+  <!-- Preloader: shown briefly on load, skipped for reduced-motion users -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <div class="preloader__panel preloader__panel--top"></div>
+    <div class="preloader__panel preloader__panel--bottom"></div>
+    <div class="preloader__core">
+      <div class="preloader__mark">
+        <svg viewBox="0 0 120 120" focusable="false">
+          <circle class="preloader__track" cx="60" cy="60" r="56" />
+          <circle class="preloader__ring" id="preloaderRing" cx="60" cy="60" r="56" />
+        </svg>
+        <img src="assets/images/logo-icy-blast-256.webp" width="84" height="84" alt="">
+      </div>
+      <p class="preloader__name"><span>Icyblast</span><i>&amp;</i><span>Bistro</span></p>
+      <p class="preloader__count"><span id="preloaderCount">0</span><small>%</small></p>
+    </div>
+  </div>
+
   <a class="skip-link" href="#main">Skip to content</a>
 
   <div class="demo-bar" role="note">
     <i class="bi bi-info-circle" aria-hidden="true"></i>
-    <span><strong>Website demo.</strong> Orders, payments and reservations are not connected to the business yet.</span>
+    <span><strong>Website demo.</strong> Orders, payments and reservations are not connected to the restaurant
+      yet.</span>
   </div>
 
   <!-- =============================== HEADER =============================== -->
   <header class="site-header" id="siteHeader">
     <nav class="navbar navbar-expand-lg" aria-label="Main">
       <div class="container">
-        <a class="lockup" href="#home" aria-label="Home">
-          <span class="lockup__icy">
-            <img src="assets/images/logo-icy-blast-256.webp" width="40" height="40" alt="">
-            <span class="lockup__text">Icy Blast <em>Bistro</em></span>
-          </span>
-          <span class="lockup__cafe">
-            <span class="lockup__mark" aria-hidden="true">24</span>
-            <span class="lockup__text">Bistro 24 <em>Café</em></span>
-          </span>
+        <a class="lockup" href="#home" aria-label="Icyblast Bistro, home">
+          <img src="assets/images/logo-icy-blast-256.webp" width="42" height="42" alt="">
+          <span class="lockup__text">ICYBLAST <em>Bistro</em></span>
         </a>
 
         <div class="d-flex align-items-center gap-2 order-lg-3">
-          <button class="btn btn-accent btn-order" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartDrawer" aria-controls="cartDrawer">
+          <button class="btn btn-accent btn-order" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartDrawer"
+            aria-controls="cartDrawer">
             <i class="bi bi-bag" aria-hidden="true"></i>
             <span class="btn-order__label">Order Now</span>
             <span class="cart-badge" id="cartBadge" aria-hidden="true">0</span>
             <span class="visually-hidden" id="cartBadgeSr">Order, 0 items in your demo cart</span>
           </button>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+            aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
             <i class="bi bi-list" aria-hidden="true"></i>
           </button>
         </div>
@@ -61,100 +80,159 @@
         <div class="collapse navbar-collapse" id="mainNav">
           <ul class="navbar-nav mx-lg-auto">
             <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="#concepts">Our Concepts</a></li>
             <li class="nav-item"><a class="nav-link" href="#menu">Menu</a></li>
+            <li class="nav-item"><a class="nav-link" href="#tower">The Tower</a></li>
             <li class="nav-item"><a class="nav-link" href="#reservations">Reservations</a></li>
             <li class="nav-item"><a class="nav-link" href="#events">Events &amp; Catering</a></li>
             <li class="nav-item"><a class="nav-link" href="#gallery">Gallery</a></li>
             <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
           </ul>
-          <div class="brand-switch" role="group" aria-label="Choose a concept">
-            <button type="button" class="brand-switch__btn" data-brand-switch="icy" aria-pressed="true">Icy Blast</button>
-            <button type="button" class="brand-switch__btn" data-brand-switch="cafe" aria-pressed="false">Bistro 24</button>
-          </div>
         </div>
       </div>
     </nav>
+    <div class="scroll-progress" aria-hidden="true"><span id="scrollProgress"></span></div>
   </header>
 
   <main id="main">
     <!-- ================================ HERO ================================ -->
-    <section class="hero" id="home" aria-labelledby="heroTitle">
-      <div class="hero__backdrop" aria-hidden="true"></div>
-      <div class="hero__media">
-        <video id="heroVideo" class="hero__video" muted loop playsinline autoplay preload="metadata"
-               poster="assets/images/hero-poster.jpg" aria-label="Footage of the Bistro 24 Café interior" width="576" height="1024">
-          <source src="assets/videos/hero-tour.mp4" type="video/mp4">
-          <source src="assets/videos/hero-tour.webm" type="video/webm">
-        </video>
-        <button class="media-toggle" id="heroToggle" type="button" aria-label="Pause background video">
-          <i class="bi bi-pause-fill" aria-hidden="true"></i>
-        </button>
-        <span class="hero__credit">Footage: Bistro 24 Café</span>
-      </div>
-      <div class="hero__scrim" aria-hidden="true"></div>
-
-      <div class="container hero__inner">
-        <p class="eyebrow eyebrow--light">Icy Blast Bistro <span aria-hidden="true">·</span> Bistro 24 Café</p>
-        <h1 id="heroTitle" class="hero__title">Good Food. Great Drinks. <em>Unforgettable Moments.</em></h1>
-        <p class="hero__lede">From loaded favourites and refreshing cocktails to café classics and moments worth celebrating.</p>
-        <div class="hero__cta">
-          <a class="btn btn-accent btn-lg" href="#menu" data-scroll-menu>Explore the Menu <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
-          <a class="btn btn-ghost btn-lg" href="#events">Plan Your Event</a>
+    <section class="bhero" id="burgerHero" aria-label="Icyblast Bistro">
+      <div class="bhero__sticky" id="home">
+        <div class="bhero__glow" aria-hidden="true"></div>
+        <canvas class="bhero__canvas" id="burgerCanvas" aria-hidden="true"></canvas>
+        <img class="bhero__fallback" src="assets/images/food-double-burger-sm.webp"
+          srcset="assets/images/food-double-burger-sm.webp 640w, assets/images/food-double-burger.webp 1656w"
+          sizes="46vw" width="640" height="616" decoding="async"
+          alt="Double burger with melted cheese on a plate of fries">
+        <h1 class="visually-hidden">Icyblast Bistro: loaded, stacked, ice cold</h1>
+        <div class="container bhero__ui">
+          <div class="bh-copy bh-copy--1">
+            <p class="eyebrow">Icyblast Bistro</p>
+            <p class="bh-title" aria-hidden="true"><span>Loaded.</span><span>Stacked.</span><span><em>Ice
+                  cold.</em></span></p>
+            <p class="bh-lede">Loaded fries, stacked burgers, crispy chicken, a tower made for sharing, and drinks to
+              match.</p>
+            <div class="bh-cta">
+              <a class="btn btn-accent btn-lg" href="#menu" data-scroll-menu>Explore the Menu <i
+                  class="bi bi-arrow-right" aria-hidden="true"></i></a>
+              <a class="btn btn-ghost btn-lg" href="#events">Plan Your Event</a>
+            </div>
+          </div>
+          <div class="bh-copy bh-copy--2" aria-hidden="true">
+            <p class="eyebrow">Built layer by layer</p>
+            <p class="bh-layer__num" id="layerNum">01 / 09</p>
+            <p class="bh-layer__name" id="layerName">Toasted bun</p>
+            <p class="bh-note">Illustrative stack. The real Icyblast recipe will be confirmed with the owner.</p>
+            <ul class="bh-dots">
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+            </ul>
+          </div>
+          <div class="bh-copy bh-copy--3">
+            <p class="eyebrow">Ready</p>
+            <h2>Stacked. <em>Now it is yours.</em></h2>
+            <p class="bh-lede">Pick a plate, build an order and see how ordering will feel on the real site.</p>
+            <div class="bh-cta">
+              <a class="btn btn-accent btn-lg" href="#menu" data-scroll-menu>See the Menu <i class="bi bi-arrow-right"
+                  aria-hidden="true"></i></a>
+              <button class="btn btn-ghost btn-lg" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#cartDrawer"><i class="bi bi-bag" aria-hidden="true"></i> Open order</button>
+            </div>
+          </div>
         </div>
+        <div class="bh-meter" aria-hidden="true"><span id="bhMeter"></span></div>
+        <a class="bh-scroll" href="#picks" aria-label="Scroll to build the burger"><span>Scroll to build it</span><i
+            class="bi bi-chevron-down" aria-hidden="true"></i></a>
       </div>
-      <a class="scroll-cue" href="#concepts" aria-label="Scroll to our concepts"><span>Scroll</span><i class="bi bi-chevron-down" aria-hidden="true"></i></a>
     </section>
 
-    <!-- ============================== CONCEPTS ============================== -->
-    <section class="section" id="concepts" aria-labelledby="conceptsTitle">
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <ul>
+          <li>Loaded Fries</li>
+          <li>Stacked Burgers</li>
+          <li>Chicken &amp; Chips</li>
+          <li>Waffle Burger</li>
+          <li>The Family Tower</li>
+          <li>Waffle Shakes</li>
+          <li>Ice Cold</li>
+        </ul>
+        <ul>
+          <li>Loaded Fries</li>
+          <li>Stacked Burgers</li>
+          <li>Chicken &amp; Chips</li>
+          <li>Waffle Burger</li>
+          <li>The Family Tower</li>
+          <li>Waffle Shakes</li>
+          <li>Ice Cold</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ============================== FAN FAVOURITES ============================== -->
+    <section class="section" id="picks" aria-labelledby="picksTitle">
       <div class="container">
         <header class="section-head">
-          <p class="eyebrow">Our concepts</p>
-          <h2 id="conceptsTitle">Two kitchens. One table.</h2>
-          <p class="section-head__lede">Switch between the restaurant and the café at any time. Each has its own menu and mood.</p>
+          <p class="eyebrow">The lineup</p>
+          <h2 id="picksTitle">Three plates, zero small talk.</h2>
+          <p class="section-head__lede">The dishes you will see everywhere on the restaurant's own social videos. Prices
+            are demo prices until the owner confirms them.</p>
         </header>
-
-        <div class="row g-4 concept-grid">
-          <div class="col-md-6">
-            <article class="concept concept--icy">
-              <div class="concept__media">
-                <img src="assets/images/food-double-burger-sm.webp"
-                     srcset="assets/images/food-double-burger-sm.webp 640w, assets/images/food-double-burger.webp 1656w"
-                     sizes="(min-width:768px) 46vw, 92vw" width="640" height="616" loading="lazy" decoding="async"
-                     alt="Double burger with melted cheese on a plate of fries">
-                <img class="concept__logo" src="assets/images/logo-icy-blast-256.webp" width="72" height="72" alt="Icy Blast Bistro logo" loading="lazy">
+        <div class="picks">
+          <article class="pick">
+            <div class="pick__media"><img src="assets/images/food-double-burger-sm.webp"
+                srcset="assets/images/food-double-burger-sm.webp 640w, assets/images/food-double-burger.webp 1656w"
+                sizes="(min-width:992px) 30vw, 80vw" width="640" height="616" loading="lazy" decoding="async"
+                alt="Double burger with melted cheese and sauce on a bed of fries"><span class="pick__num"
+                aria-hidden="true">01</span></div>
+            <div class="pick__body">
+              <h3>Double Burger &amp; Fries</h3>
+              <p>A tall double stack with melted cheese and pink sauce, piled on golden fries.</p>
+              <div class="pick__foot">
+                <button class="btn btn-accent" type="button" data-add="icy-double-burger-chips"><i class="bi bi-plus-lg"
+                    aria-hidden="true"></i> Add to order</button>
+                <button class="btn btn-link-quiet" type="button" data-explore data-cat="burgers">See in menu</button>
               </div>
-              <div class="concept__body">
-                <p class="eyebrow">The restaurant</p>
-                <h3>Icy Blast Bistro</h3>
-                <p>Stacked burgers, loaded fries, crispy chicken, signature platters and cocktails.</p>
-                <div class="concept__actions">
-                  <button class="btn btn-accent" type="button" data-explore="icy">Explore Menu <i class="bi bi-arrow-right" aria-hidden="true"></i></button>
-                  <a class="btn btn-link-quiet" href="https://www.tiktok.com/@icyblastbistro" target="_blank" rel="noopener noreferrer"><i class="bi bi-tiktok" aria-hidden="true"></i> @icyblastbistro<span class="visually-hidden"> (opens TikTok in a new tab)</span></a>
-                </div>
+            </div>
+          </article>
+          <article class="pick">
+            <div class="pick__media"><img src="assets/images/food-loaded-fries-sm.webp"
+                srcset="assets/images/food-loaded-fries-sm.webp 640w, assets/images/food-loaded-fries.webp 1656w"
+                sizes="(min-width:992px) 30vw, 80vw" width="640" height="684" loading="lazy" decoding="async"
+                alt="A plate of loaded fries with melted cheese, sauce and ketchup"><span class="pick__num"
+                aria-hidden="true">02</span></div>
+            <div class="pick__body">
+              <h3>Loaded Fries</h3>
+              <p>Fries piled with a savoury topping, melted cheese, creamy sauce and ketchup.</p>
+              <div class="pick__foot">
+                <button class="btn btn-accent" type="button" data-add="icy-loaded-fries"><i class="bi bi-plus-lg"
+                    aria-hidden="true"></i> Add to order</button>
+                <button class="btn btn-link-quiet" type="button" data-explore data-cat="loaded">See in menu</button>
               </div>
-            </article>
-          </div>
-          <div class="col-md-6">
-            <article class="concept concept--cafe">
-              <div class="concept__media">
-                <img src="assets/images/venue-ceiling-sm.webp"
-                     srcset="assets/images/venue-ceiling-sm.webp 640w, assets/images/venue-ceiling.webp 1152w"
-                     sizes="(min-width:768px) 46vw, 92vw" width="640" height="1138" loading="lazy" decoding="async"
-                     alt="Inside Bistro 24 Café with warm ceiling lights, curtains and wooden seating" style="object-position:50% 60%">
+            </div>
+          </article>
+          <article class="pick">
+            <div class="pick__media"><img src="assets/images/food-wings-chips-sm.webp"
+                srcset="assets/images/food-wings-chips-sm.webp 640w, assets/images/food-wings-chips.webp 1656w"
+                sizes="(min-width:992px) 30vw, 80vw" width="640" height="890" loading="lazy" decoding="async"
+                alt="Fried chicken pieces with chips in a wire basket and a bowl of ketchup"><span class="pick__num"
+                aria-hidden="true">03</span></div>
+            <div class="pick__body">
+              <h3>Chicken &amp; Chips</h3>
+              <p>Crispy fried chicken with a basket of golden chips and a ketchup dip.</p>
+              <div class="pick__foot">
+                <button class="btn btn-accent" type="button" data-add="icy-chicken-chips"><i class="bi bi-plus-lg"
+                    aria-hidden="true"></i> Add to order</button>
+                <button class="btn btn-link-quiet" type="button" data-explore data-cat="chicken">See in menu</button>
               </div>
-              <div class="concept__body">
-                <p class="eyebrow">The café</p>
-                <h3>Bistro 24 Café</h3>
-                <p>Waffles, pancakes, boba, matcha, milkshakes, frozen cocktails and café favourites.</p>
-                <div class="concept__actions">
-                  <button class="btn btn-accent" type="button" data-explore="cafe">Explore Menu <i class="bi bi-arrow-right" aria-hidden="true"></i></button>
-                  <a class="btn btn-link-quiet" href="https://www.tiktok.com/@bistro_24hr" target="_blank" rel="noopener noreferrer"><i class="bi bi-tiktok" aria-hidden="true"></i> @bistro_24hr<span class="visually-hidden"> (opens TikTok in a new tab)</span></a>
-                </div>
-              </div>
-            </article>
-          </div>
+            </div>
+          </article>
         </div>
       </div>
     </section>
@@ -166,24 +244,31 @@
           <div class="col-lg-6 order-lg-2">
             <figure class="tower__figure">
               <img src="assets/images/food-family-tower-sm.webp"
-                   srcset="assets/images/food-family-tower-sm.webp 640w, assets/images/food-family-tower.webp 1408w"
-                   sizes="(min-width:992px) 40vw, 92vw" width="640" height="795" loading="lazy" decoding="async"
-                   alt="The Family Tower: a tiered wooden stand loaded with burgers, fries, waffles, chicken and sticks">
+                srcset="assets/images/food-family-tower-sm.webp 640w, assets/images/food-family-tower.webp 1408w"
+                sizes="(min-width:992px) 40vw, 92vw" width="640" height="795" loading="lazy" decoding="async"
+                alt="The Family Tower: a tiered wooden stand loaded with burgers, fries, waffles, chicken and sticks">
               <figcaption class="visually-hidden">The Family Tower platter</figcaption>
             </figure>
           </div>
           <div class="col-lg-6 order-lg-1">
             <p class="eyebrow eyebrow--light">Signature platter</p>
             <h2 id="towerTitle">The Family Tower</h2>
-            <p class="lede-light">Built for sharing, built to be photographed. Three tiers of favourites arrive at the table on a wooden stand.</p>
+            <p class="lede-light">Built for sharing, built to be photographed. Tiers of favourites arrive at the table
+              on a wooden stand.</p>
             <p class="tower__label"><span class="badge-demo">Provisional contents — owner to confirm</span></p>
             <ul class="chip-list" aria-label="Provisional contents">
-              <li>Burgers</li><li>Fries</li><li>Waffles</li><li>Chicken</li><li>Meat sticks</li><li>Shawarma</li>
+              <li>Burgers</li>
+              <li>Fries</li>
+              <li>Waffles</li>
+              <li>Chicken</li>
+              <li>Meat sticks</li>
+              <li>Shawarma</li>
             </ul>
-            <p class="tower__price">Price to be confirmed</p>
+            <p class="tower__price">Price to be confirmed <small>(the cart uses a demo price)</small></p>
             <div class="d-flex flex-wrap gap-3">
-              <button class="btn btn-accent btn-lg" type="button" data-add="icy-family-tower"><i class="bi bi-plus-lg" aria-hidden="true"></i> Add to order</button>
-              <button class="btn btn-ghost btn-lg" type="button" data-explore="icy" data-cat="platters">See in menu</button>
+              <button class="btn btn-accent btn-lg" type="button" data-add="icy-family-tower"><i class="bi bi-plus-lg"
+                  aria-hidden="true"></i> Add to order</button>
+              <button class="btn btn-ghost btn-lg" type="button" data-explore data-cat="platters">See in menu</button>
             </div>
           </div>
         </div>
@@ -198,20 +283,11 @@
           <h2 id="menuTitle">What are you in the mood for?</h2>
         </header>
 
-        <div class="menu-tabs" role="group" aria-label="Choose a menu">
-          <button type="button" class="menu-tab" data-brand-switch="icy" aria-pressed="true">
-            <img src="assets/images/logo-icy-blast-256.webp" width="28" height="28" alt="" loading="lazy">
-            <span>Icy Blast Bistro</span>
-          </button>
-          <button type="button" class="menu-tab" data-brand-switch="cafe" aria-pressed="false">
-            <span class="menu-tab__mark" aria-hidden="true">24</span>
-            <span>Bistro 24 Café</span>
-          </button>
-        </div>
-
         <div class="menu-note" role="note">
           <i class="bi bi-info-circle" aria-hidden="true"></i>
-          <p>Demo menu. Prices come from menu images supplied for this prototype and are <strong>not yet confirmed</strong> by the owner. Items marked <em>Price to be confirmed</em> have no price yet. Allergen and ingredient information has not been supplied.</p>
+          <p>Demo menu. <strong>No Icyblast prices have been supplied yet.</strong> Every price shown carries a <em>Demo
+              price</em> label so the order flow can be demonstrated. Dish names marked <em>Provisional</em> are working
+            names, and allergen and ingredient information has not been supplied.</p>
         </div>
 
         <div class="menu-tools">
@@ -219,7 +295,7 @@
           <div class="search">
             <label class="visually-hidden" for="menuSearch">Search the menu</label>
             <i class="bi bi-search" aria-hidden="true"></i>
-            <input id="menuSearch" type="search" class="form-control" placeholder="Search this menu" autocomplete="off">
+            <input id="menuSearch" type="search" class="form-control" placeholder="Search the menu" autocomplete="off">
           </div>
         </div>
 
@@ -232,35 +308,6 @@
           <p id="menuEmptyText">Try a different word or clear the filters.</p>
           <div class="d-flex flex-wrap gap-2 justify-content-center">
             <button class="btn btn-accent" type="button" id="clearFilters">Clear filters</button>
-            <button class="btn btn-ghost-dark" type="button" id="searchOther" hidden></button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================== THE SPACE ============================== -->
-    <section class="section section--tint" id="space" aria-labelledby="spaceTitle">
-      <div class="container">
-        <div class="row g-4 g-lg-5 align-items-center">
-          <div class="col-lg-5">
-            <figure class="video-card">
-              <video id="kitchenVideo" muted loop playsinline preload="none" poster="assets/images/kitchen-poster.jpg" width="576" height="1024"
-                     aria-label="Behind the scenes in the Bistro 24 Café kitchen">
-                <source src="assets/videos/kitchen-wings.mp4" type="video/mp4">
-                <source src="assets/videos/kitchen-wings.webm" type="video/webm">
-              </video>
-              <button class="media-toggle" id="kitchenToggle" type="button" aria-label="Play kitchen video"><i class="bi bi-play-fill" aria-hidden="true"></i></button>
-            </figure>
-          </div>
-          <div class="col-lg-7">
-            <p class="eyebrow">Inside Bistro 24 Café</p>
-            <h2 id="spaceTitle">Warm light, wooden tables, something on the grill.</h2>
-            <p class="lede">A relaxed room for breakfast, boba, birthdays and late conversations. Photos and video on this page come from the venue's own footage.</p>
-            <div class="mosaic">
-              <img src="assets/images/venue-table-sm.webp" srcset="assets/images/venue-table-sm.webp 640w, assets/images/venue-table.webp 1152w" sizes="(min-width:992px) 18vw, 44vw" width="640" height="1138" loading="lazy" decoding="async" alt="A round wooden table with pampas grass in a vase and curtains behind">
-              <img src="assets/images/venue-lounge-sm.webp" srcset="assets/images/venue-lounge-sm.webp 640w, assets/images/venue-lounge.webp 1152w" sizes="(min-width:992px) 18vw, 44vw" width="640" height="1138" loading="lazy" decoding="async" alt="Lounge seating beneath an illuminated Bistro 24 sign">
-              <img src="assets/images/venue-pampas-sm.webp" srcset="assets/images/venue-pampas-sm.webp 640w, assets/images/venue-pampas.webp 1152w" sizes="(min-width:992px) 18vw, 44vw" width="640" height="1138" loading="lazy" decoding="async" alt="Pampas grass and a board game on a wooden table" class="d-none d-md-block">
-            </div>
           </div>
         </div>
       </div>
@@ -272,8 +319,9 @@
         <div class="row g-4 g-lg-5">
           <div class="col-lg-5">
             <p class="eyebrow">Reservations &amp; special occasions</p>
-            <h2 id="resTitle">Birthdays, date nights and family gatherings.</h2>
-            <p class="lede">Tell us what you are celebrating and when. This form is a prototype: it shows how a request would be collected, but nothing is sent to the business and no table is held.</p>
+            <h2 id="resTitle">Birthdays, date nights and big-group nights.</h2>
+            <p class="lede">Tell us what you are celebrating and when. This form is a prototype: it shows how a request
+              would be collected, but nothing is sent to the business and no table is held.</p>
             <ul class="check-list">
               <li>Past dates are blocked automatically.</li>
               <li>No availability is shown, because none has been connected.</li>
@@ -286,47 +334,62 @@
                 <div class="row g-3">
                   <div class="col-md-6">
                     <label class="form-label" for="resName">Your name</label>
-                    <input class="form-control" id="resName" name="name" type="text" autocomplete="name" required data-error="Please enter your name.">
+                    <input class="form-control" id="resName" name="name" type="text" autocomplete="name" required
+                      data-error="Please enter your name.">
                     <div class="invalid-feedback"></div>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label" for="resContact">Phone or email</label>
-                    <input class="form-control" id="resContact" name="contact" type="text" autocomplete="off" required data-rule="contact" data-error="Enter a valid phone number or email address.">
+                    <input class="form-control" id="resContact" name="contact" type="text" autocomplete="off" required
+                      data-rule="contact" data-error="Enter a valid phone number or email address.">
                     <div class="invalid-feedback"></div>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label" for="resOccasion">Occasion</label>
-                    <select class="form-select" id="resOccasion" name="occasion" required data-error="Please choose an occasion.">
+                    <select class="form-select" id="resOccasion" name="occasion" required
+                      data-error="Please choose an occasion.">
                       <option value="">Choose…</option>
-                      <option>Birthday</option><option>Celebration</option><option>Date night</option><option>Family gathering</option><option>Friends' get-together</option><option>Other</option>
+                      <option>Birthday</option>
+                      <option>Celebration</option>
+                      <option>Date night</option>
+                      <option>Family gathering</option>
+                      <option>Friends' get-together</option>
+                      <option>Other</option>
                     </select>
                     <div class="invalid-feedback"></div>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label" for="resGuests">Number of guests</label>
-                    <input class="form-control" id="resGuests" name="guests" type="number" min="1" max="500" inputmode="numeric" required data-error="Enter a number of guests (1 or more).">
+                    <input class="form-control" id="resGuests" name="guests" type="number" min="1" max="500"
+                      inputmode="numeric" required data-error="Enter a number of guests (1 or more).">
                     <div class="invalid-feedback"></div>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label" for="resDate">Requested date</label>
-                    <input class="form-control" id="resDate" name="date" type="date" required data-rule="future-date" data-error="Choose today or a future date.">
+                    <input class="form-control" id="resDate" name="date" type="date" required data-rule="future-date"
+                      data-error="Choose today or a future date.">
                     <div class="invalid-feedback"></div>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label" for="resTime">Requested time</label>
-                    <input class="form-control" id="resTime" name="time" type="time" required data-error="Choose a time.">
+                    <input class="form-control" id="resTime" name="time" type="time" required
+                      data-error="Choose a time.">
                     <div class="invalid-feedback"></div>
                   </div>
                   <div class="col-12">
-                    <label class="form-label" for="resSeating">Seating or setup preferences <span class="optional">(optional)</span></label>
-                    <input class="form-control" id="resSeating" name="seating" type="text" placeholder="e.g. a quiet corner, a long table for a group">
+                    <label class="form-label" for="resSeating">Seating or setup preferences <span
+                        class="optional">(optional)</span></label>
+                    <input class="form-control" id="resSeating" name="seating" type="text"
+                      placeholder="e.g. a quiet corner, a long table for a group">
                   </div>
                   <div class="col-12">
-                    <label class="form-label" for="resNotes">Additional notes <span class="optional">(optional)</span></label>
+                    <label class="form-label" for="resNotes">Additional notes <span
+                        class="optional">(optional)</span></label>
                     <textarea class="form-control" id="resNotes" name="notes" rows="3"></textarea>
                   </div>
                   <div class="col-12">
-                    <p class="form-demo-note"><i class="bi bi-info-circle" aria-hidden="true"></i> Demo only. Submitting does not send anything to the restaurant or reserve a table.</p>
+                    <p class="form-demo-note"><i class="bi bi-info-circle" aria-hidden="true"></i> Demo only. Submitting
+                      does not send anything to the restaurant or reserve a table.</p>
                     <button class="btn btn-accent btn-lg" type="submit">Submit demo request</button>
                   </div>
                 </div>
@@ -343,13 +406,22 @@
         <header class="section-head section-head--light">
           <p class="eyebrow eyebrow--light">Cocktail service &amp; event catering</p>
           <h2 id="eventsTitle">Make Your Event a Little More Extraordinary.</h2>
-          <p class="section-head__lede">Private parties, birthdays and celebrations, with cocktails and food at the centre. Availability, packages and pricing are for the owner to confirm.</p>
+          <p class="section-head__lede">Private parties, birthdays and celebrations, with cocktails and loaded food at
+            the centre. Availability, packages and pricing are for the owner to confirm.</p>
         </header>
 
-        <div class="event-photos" aria-hidden="false">
-          <img src="assets/images/drink-frozen-cocktail-sm.webp" srcset="assets/images/drink-frozen-cocktail-sm.webp 640w, assets/images/drink-frozen-cocktail.webp 1152w" sizes="(min-width:992px) 30vw, 92vw" width="640" height="1138" loading="lazy" decoding="async" alt="A frozen cocktail in a coupe glass on the café bar">
-          <img src="assets/images/venue-pampas-sm.webp" srcset="assets/images/venue-pampas-sm.webp 640w, assets/images/venue-pampas.webp 1152w" sizes="30vw" width="640" height="1138" loading="lazy" decoding="async" alt="Decorated table with pampas grass, ready for guests" class="d-none d-md-block">
-          <img src="assets/images/food-family-tower-sm.webp" srcset="assets/images/food-family-tower-sm.webp 640w, assets/images/food-family-tower.webp 1408w" sizes="30vw" width="640" height="795" loading="lazy" decoding="async" alt="The Family Tower platter" class="d-none d-lg-block">
+        <div class="event-photos">
+          <img src="assets/images/drink-strawberry-shake-sm.webp"
+            srcset="assets/images/drink-strawberry-shake-sm.webp 640w, assets/images/drink-strawberry-shake.webp 1656w"
+            sizes="(min-width:992px) 30vw, 92vw" width="640" height="958" loading="lazy" decoding="async"
+            alt="A strawberry milkshake topped with a waffle and whipped cream">
+          <img class="d-none d-md-block" src="assets/images/food-family-tower-sm.webp"
+            srcset="assets/images/food-family-tower-sm.webp 640w, assets/images/food-family-tower.webp 1408w"
+            sizes="30vw" width="640" height="795" loading="lazy" decoding="async" alt="The Family Tower platter">
+          <img class="d-none d-lg-block" src="assets/images/food-double-burger-sm.webp"
+            srcset="assets/images/food-double-burger-sm.webp 640w, assets/images/food-double-burger.webp 1656w"
+            sizes="30vw" width="640" height="616" loading="lazy" decoding="async"
+            alt="A double burger on a bed of fries">
         </div>
 
         <div class="row g-4 g-lg-5 mt-1">
@@ -365,10 +437,20 @@
             <h3 class="h4 text-cream mt-5">Concept ideas</h3>
             <p class="small text-cream-muted">Placeholders for discussion — not real packages and not priced.</p>
             <div class="concept-cards">
-              <div class="concept-card"><span class="badge-demo">Concept</span><h4>Cocktail Station</h4><p>A cocktail service set up at your event.</p></div>
-              <div class="concept-card"><span class="badge-demo">Concept</span><h4>Party Platters</h4><p>Sharing platters, such as the Family Tower, for a group.</p></div>
-              <div class="concept-card"><span class="badge-demo">Concept</span><h4>Celebration Brunch</h4><p>Waffles, pancakes and boba for a morning gathering.</p></div>
+              <div class="concept-card"><span class="badge-demo">Concept</span>
+                <h4>Cocktail Station</h4>
+                <p>A cocktail service set up at your event.</p>
+              </div>
+              <div class="concept-card"><span class="badge-demo">Concept</span>
+                <h4>Party Platters</h4>
+                <p>Sharing platters, such as the Family Tower, for a group.</p>
+              </div>
+              <div class="concept-card"><span class="badge-demo">Concept</span>
+                <h4>Loaded Night</h4>
+                <p>Loaded fries and stacked burgers for a crowd.</p>
+              </div>
             </div>
+
           </div>
 
           <div class="col-lg-7">
@@ -378,60 +460,84 @@
                 <div class="row g-3">
                   <div class="col-md-6">
                     <label class="form-label" for="evName">Your name</label>
-                    <input class="form-control" id="evName" name="name" type="text" autocomplete="name" required data-error="Please enter your name.">
+                    <input class="form-control" id="evName" name="name" type="text" autocomplete="name" required
+                      data-error="Please enter your name.">
                     <div class="invalid-feedback"></div>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label" for="evMethod">Preferred contact method</label>
-                    <select class="form-select" id="evMethod" name="method" required data-error="Choose how you would like to be contacted.">
-                      <option value="">Choose…</option><option>Phone call</option><option>WhatsApp</option><option>Email</option>
+                    <select class="form-select" id="evMethod" name="method" required
+                      data-error="Choose how you would like to be contacted.">
+                      <option value="">Choose…</option>
+                      <option>Phone call</option>
+                      <option>WhatsApp</option>
+                      <option>Email</option>
                     </select>
                     <div class="invalid-feedback"></div>
                   </div>
                   <div class="col-12">
                     <label class="form-label" for="evContact">Your phone number or email</label>
-                    <input class="form-control" id="evContact" name="contact" type="text" required data-rule="contact" data-error="Enter a valid phone number or email address.">
+                    <input class="form-control" id="evContact" name="contact" type="text" required data-rule="contact"
+                      data-error="Enter a valid phone number or email address.">
                     <div class="invalid-feedback"></div>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label" for="evType">Event type</label>
-                    <select class="form-select" id="evType" name="type" required data-error="Please choose an event type.">
-                      <option value="">Choose…</option><option>Birthday</option><option>Private party</option><option>Celebration</option><option>Corporate gathering</option><option>Other</option>
+                    <select class="form-select" id="evType" name="type" required
+                      data-error="Please choose an event type.">
+                      <option value="">Choose…</option>
+                      <option>Birthday</option>
+                      <option>Private party</option>
+                      <option>Celebration</option>
+                      <option>Corporate gathering</option>
+                      <option>Other</option>
                     </select>
                     <div class="invalid-feedback"></div>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label" for="evService">Requested service</label>
-                    <select class="form-select" id="evService" name="service" required data-error="Please choose a service.">
-                      <option value="">Choose…</option><option>Cocktail service</option><option>Food catering</option><option>Cocktails and catering</option><option>Not sure yet</option>
+                    <select class="form-select" id="evService" name="service" required
+                      data-error="Please choose a service.">
+                      <option value="">Choose…</option>
+                      <option>Cocktail service</option>
+                      <option>Food catering</option>
+                      <option>Cocktails and catering</option>
+                      <option>Not sure yet</option>
                     </select>
                     <div class="invalid-feedback"></div>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label" for="evDate">Event date</label>
-                    <input class="form-control" id="evDate" name="date" type="date" required data-rule="future-date" data-error="Choose today or a future date.">
+                    <input class="form-control" id="evDate" name="date" type="date" required data-rule="future-date"
+                      data-error="Choose today or a future date.">
                     <div class="invalid-feedback"></div>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label" for="evGuests">Estimated guests</label>
-                    <input class="form-control" id="evGuests" name="guests" type="number" min="1" max="5000" inputmode="numeric" required data-error="Enter an estimated number of guests.">
+                    <input class="form-control" id="evGuests" name="guests" type="number" min="1" max="5000"
+                      inputmode="numeric" required data-error="Enter an estimated number of guests.">
                     <div class="invalid-feedback"></div>
                   </div>
                   <div class="col-12">
                     <label class="form-label" for="evLocation">Event location</label>
-                    <input class="form-control" id="evLocation" name="location" type="text" required data-error="Tell us where the event will take place.">
+                    <input class="form-control" id="evLocation" name="location" type="text" required
+                      data-error="Tell us where the event will take place.">
                     <div class="invalid-feedback"></div>
                   </div>
                   <div class="col-12">
-                    <label class="form-label" for="evBudget">Budget range <span class="optional">(optional)</span></label>
-                    <input class="form-control" id="evBudget" name="budget" type="text" placeholder="Your estimated budget, if you have one">
+                    <label class="form-label" for="evBudget">Budget range <span
+                        class="optional">(optional)</span></label>
+                    <input class="form-control" id="evBudget" name="budget" type="text"
+                      placeholder="Your estimated budget, if you have one">
                   </div>
                   <div class="col-12">
-                    <label class="form-label" for="evNotes">Additional requirements <span class="optional">(optional)</span></label>
+                    <label class="form-label" for="evNotes">Additional requirements <span
+                        class="optional">(optional)</span></label>
                     <textarea class="form-control" id="evNotes" name="notes" rows="3"></textarea>
                   </div>
                   <div class="col-12">
-                    <p class="form-demo-note"><i class="bi bi-info-circle" aria-hidden="true"></i> Demo only. The business has not received this enquiry.</p>
+                    <p class="form-demo-note"><i class="bi bi-info-circle" aria-hidden="true"></i> Demo only. The
+                      business has not received this enquiry.</p>
                     <button class="btn btn-accent btn-lg" type="submit">Submit demo enquiry</button>
                   </div>
                 </div>
@@ -448,7 +554,7 @@
         <header class="section-head">
           <p class="eyebrow">Gallery</p>
           <h2 id="galleryTitle">A closer look.</h2>
-          <p class="section-head__lede">Stills from the venue's own social videos. Tap any photo to enlarge.</p>
+          <p class="section-head__lede">Stills from the restaurant's own social videos. Tap any photo to enlarge.</p>
         </header>
         <div class="chip-row chip-row--center" id="galleryFilters" role="group" aria-label="Filter the gallery"></div>
         <div class="gallery" id="galleryGrid"></div>
@@ -461,16 +567,19 @@
         <div class="row g-4 g-lg-5 align-items-center">
           <div class="col-lg-6">
             <p class="eyebrow">About</p>
-            <h2 id="aboutTitle">Food and drinks, made for sharing.</h2>
-            <p class="lede">Icy Blast Bistro and Bistro 24 Café bring together loaded favourites, café classics, boba, frozen cocktails and platters made for the table, plus the possibility of cocktail service and catering for your own events.</p>
-            <p>This page uses placeholder copy until the owner shares the real story: how it started, who is behind it and what makes it theirs.</p>
+            <h2 id="aboutTitle">Made for sharing. Built to be photographed.</h2>
+            <p class="lede">Icyblast Bistro is known on social media for loaded fries, stacked burgers, crispy chicken
+              and towers of food, with a cocktail glass on its logo.</p>
+            <p>This page uses placeholder copy until the owner shares the real story: how it started, who is behind it
+              and what makes it theirs.</p>
           </div>
           <div class="col-lg-6">
             <div class="location-card" id="locationCard">
               <i class="bi bi-geo-alt" aria-hidden="true"></i>
               <h3>Find us</h3>
-              <p id="locationText">Verified address to be added by the owner.</p>
-              <div class="map-slot" id="mapSlot" aria-hidden="true">Map placeholder. A real map is embedded here once the verified address is supplied.</div>
+              <p id="locationText">Verified address and opening hours to be added by the owner.</p>
+              <div class="map-slot" id="mapSlot" aria-hidden="true">Map placeholder. A real map is embedded here once
+                the verified address is supplied.</div>
             </div>
           </div>
         </div>
@@ -484,12 +593,17 @@
           <div class="col-lg-5">
             <p class="eyebrow">Contact</p>
             <h2 id="contactTitle">Say hello.</h2>
-            <p class="lede">Follow the two concepts on TikTok, or leave a message with this demo form.</p>
+            <p class="lede">Follow Icyblast on TikTok or Instagram, or leave a message with this demo form.</p>
             <ul class="contact-list" id="contactList">
-              <li><a href="https://www.tiktok.com/@icyblastbistro" target="_blank" rel="noopener noreferrer"><i class="bi bi-tiktok" aria-hidden="true"></i> Icy Blast Bistro <span>@icyblastbistro</span><span class="visually-hidden"> (opens in a new tab)</span></a></li>
-              <li><a href="https://www.tiktok.com/@bistro_24hr" target="_blank" rel="noopener noreferrer"><i class="bi bi-tiktok" aria-hidden="true"></i> Bistro 24 Café <span>@bistro_24hr</span><span class="visually-hidden"> (opens in a new tab)</span></a></li>
+              <li><a href="https://www.tiktok.com/@icyblastbistro" target="_blank" rel="noopener noreferrer"><i
+                    class="bi bi-tiktok" aria-hidden="true"></i> TikTok <span>@icyblastbistro</span><span
+                    class="visually-hidden"> (opens in a new tab)</span></a></li>
+              <li><a href="https://www.instagram.com/icyblastbistro/" target="_blank" rel="noopener noreferrer"><i
+                    class="bi bi-instagram" aria-hidden="true"></i> Instagram <span>@icyblastbistro</span><span
+                    class="visually-hidden"> (opens in a new tab)</span></a></li>
             </ul>
-            <p class="small text-muted-ink" id="contactPending">Phone, WhatsApp and email will appear here once the owner confirms them.</p>
+            <p class="small text-muted-ink" id="contactPending">Phone, WhatsApp and email will appear here once the
+              owner confirms them.</p>
           </div>
           <div class="col-lg-7">
             <div class="form-card" id="contactCard">
@@ -497,21 +611,25 @@
                 <div class="row g-3">
                   <div class="col-md-6">
                     <label class="form-label" for="ctName">Your name</label>
-                    <input class="form-control" id="ctName" name="name" type="text" autocomplete="name" required data-error="Please enter your name.">
+                    <input class="form-control" id="ctName" name="name" type="text" autocomplete="name" required
+                      data-error="Please enter your name.">
                     <div class="invalid-feedback"></div>
                   </div>
                   <div class="col-md-6">
                     <label class="form-label" for="ctContact">Phone or email</label>
-                    <input class="form-control" id="ctContact" name="contact" type="text" required data-rule="contact" data-error="Enter a valid phone number or email address.">
+                    <input class="form-control" id="ctContact" name="contact" type="text" required data-rule="contact"
+                      data-error="Enter a valid phone number or email address.">
                     <div class="invalid-feedback"></div>
                   </div>
                   <div class="col-12">
                     <label class="form-label" for="ctMessage">Message</label>
-                    <textarea class="form-control" id="ctMessage" name="message" rows="4" required minlength="5" data-error="Please write a short message."></textarea>
+                    <textarea class="form-control" id="ctMessage" name="message" rows="4" required minlength="5"
+                      data-error="Please write a short message."></textarea>
                     <div class="invalid-feedback"></div>
                   </div>
                   <div class="col-12">
-                    <p class="form-demo-note"><i class="bi bi-info-circle" aria-hidden="true"></i> Demo only. Messages are not delivered anywhere yet.</p>
+                    <p class="form-demo-note"><i class="bi bi-info-circle" aria-hidden="true"></i> Demo only. Messages
+                      are not delivered anywhere yet.</p>
                     <button class="btn btn-accent btn-lg" type="submit">Send demo message</button>
                   </div>
                 </div>
@@ -528,26 +646,34 @@
     <div class="container">
       <div class="row g-4">
         <div class="col-md-5">
-          <p class="footer-brand">Icy Blast Bistro <span aria-hidden="true">&amp;</span> Bistro 24 Café</p>
-          <p class="small">Good food. Great drinks. Unforgettable moments.</p>
+          <p class="footer-brand footer-brand--logo"><img src="assets/images/logo-icy-blast-256.webp" width="48"
+              height="48" alt=""> ICYBLAST Bistro</p>
+          <p class="small">Loaded. Stacked. Ice cold.</p>
         </div>
         <div class="col-6 col-md-3">
           <h2 class="footer-title">Explore</h2>
           <ul class="footer-list">
-            <li><a href="#concepts">Our Concepts</a></li><li><a href="#menu">Menu</a></li><li><a href="#reservations">Reservations</a></li><li><a href="#events">Events &amp; Catering</a></li><li><a href="#gallery">Gallery</a></li><li><a href="#contact">Contact</a></li>
+            <li><a href="#menu">Menu</a></li>
+            <li><a href="#tower">The Tower</a></li>
+            <li><a href="#reservations">Reservations</a></li>
+            <li><a href="#events">Events &amp; Catering</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#contact">Contact</a></li>
           </ul>
         </div>
         <div class="col-6 col-md-4">
-          <h2 class="footer-title">Concepts</h2>
+          <h2 class="footer-title">Follow</h2>
           <ul class="footer-list">
-            <li><button type="button" class="link-btn" data-explore="icy">Icy Blast Bistro menu</button></li>
-            <li><button type="button" class="link-btn" data-explore="cafe">Bistro 24 Café menu</button></li>
-            <li><a href="https://www.tiktok.com/@icyblastbistro" target="_blank" rel="noopener noreferrer">TikTok @icyblastbistro</a></li>
-            <li><a href="https://www.tiktok.com/@bistro_24hr" target="_blank" rel="noopener noreferrer">TikTok @bistro_24hr</a></li>
+            <li><a href="https://www.tiktok.com/@icyblastbistro" target="_blank" rel="noopener noreferrer">TikTok
+                @icyblastbistro</a></li>
+            <li><a href="https://www.instagram.com/icyblastbistro/" target="_blank" rel="noopener noreferrer">Instagram
+                @icyblastbistro</a></li>
           </ul>
         </div>
       </div>
-      <p class="footer-legal">This is a website demonstration. Orders, payments, reservations and enquiries are not connected to the business. Prices and menu details are provisional. Prototype by PixelReach · wale.dev</p>
+      <p class="footer-legal">This is a website demonstration prepared for Icyblast Bistro. Orders, payments,
+        reservations and enquiries are not connected to the business. Menu details are provisional and all prices are
+        demo prices. Prototype by PixelReach · wale.dev</p>
     </div>
   </footer>
 
@@ -558,21 +684,25 @@
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close order panel"></button>
     </div>
     <div class="offcanvas-body">
-      <p class="demo-banner" role="note"><i class="bi bi-info-circle" aria-hidden="true"></i> This is a website demo. Orders and payments are not yet connected to the restaurant.</p>
+      <p class="demo-banner" role="note"><i class="bi bi-info-circle" aria-hidden="true"></i> This is a website demo.
+        Orders and payments are not yet connected to the restaurant.</p>
 
       <!-- View: cart -->
       <section data-view="cart">
         <div class="cart-empty" id="cartEmpty">
           <i class="bi bi-bag" aria-hidden="true"></i>
           <p>Your demo order is empty.</p>
-          <button class="btn btn-accent" type="button" data-bs-dismiss="offcanvas" data-scroll-menu>Browse the menu</button>
+          <button class="btn btn-accent" type="button" data-bs-dismiss="offcanvas" data-scroll-menu>Browse the
+            menu</button>
         </div>
         <div id="cartFilled" hidden>
           <ul class="cart-lines" id="cartLines"></ul>
           <fieldset class="fulfil">
             <legend>How would you like it?</legend>
-            <label class="fulfil__opt"><input type="radio" name="fulfilment" value="collection" checked> <span>Collection</span></label>
-            <label class="fulfil__opt"><input type="radio" name="fulfilment" value="delivery"> <span>Delivery</span></label>
+            <label class="fulfil__opt"><input type="radio" name="fulfilment" value="collection" checked>
+              <span>Collection</span></label>
+            <label class="fulfil__opt"><input type="radio" name="fulfilment" value="delivery">
+              <span>Delivery</span></label>
           </fieldset>
           <dl class="totals" id="cartTotals"></dl>
           <div class="d-grid gap-2">
@@ -584,31 +714,37 @@
 
       <!-- View: details -->
       <section data-view="details" hidden>
-        <button class="btn btn-link-quiet back-btn" type="button" data-goto="cart"><i class="bi bi-chevron-left" aria-hidden="true"></i> Back to order</button>
+        <button class="btn btn-link-quiet back-btn" type="button" data-goto="cart"><i class="bi bi-chevron-left"
+            aria-hidden="true"></i> Back to order</button>
         <form id="checkoutForm" novalidate>
           <div class="mb-3">
             <label class="form-label" for="coName">Your name</label>
-            <input class="form-control" id="coName" name="name" type="text" autocomplete="name" required data-error="Please enter your name.">
+            <input class="form-control" id="coName" name="name" type="text" autocomplete="name" required
+              data-error="Please enter your name.">
             <div class="invalid-feedback"></div>
           </div>
           <div class="mb-3">
             <label class="form-label" for="coPhone">Phone number</label>
-            <input class="form-control" id="coPhone" name="phone" type="tel" autocomplete="tel" required data-rule="phone" data-error="Enter a valid phone number.">
+            <input class="form-control" id="coPhone" name="phone" type="tel" autocomplete="tel" required
+              data-rule="phone" data-error="Enter a valid phone number.">
             <div class="invalid-feedback"></div>
           </div>
           <div class="mb-3">
             <label class="form-label" for="coEmail">Email <span class="optional">(optional)</span></label>
-            <input class="form-control" id="coEmail" name="email" type="email" autocomplete="email" data-error="Enter a valid email address.">
+            <input class="form-control" id="coEmail" name="email" type="email" autocomplete="email"
+              data-error="Enter a valid email address.">
             <div class="invalid-feedback"></div>
           </div>
           <div id="deliveryFields" hidden>
             <div class="mb-3">
               <label class="form-label" for="coAddress">Delivery address</label>
-              <textarea class="form-control" id="coAddress" name="address" rows="2" data-error="Enter a delivery address."></textarea>
+              <textarea class="form-control" id="coAddress" name="address" rows="2"
+                data-error="Enter a delivery address."></textarea>
               <div class="invalid-feedback"></div>
             </div>
             <div class="mb-3">
-              <label class="form-label" for="coLandmark">Landmark or area <span class="optional">(optional)</span></label>
+              <label class="form-label" for="coLandmark">Landmark or area <span
+                  class="optional">(optional)</span></label>
               <input class="form-control" id="coLandmark" name="landmark" type="text">
             </div>
           </div>
@@ -616,7 +752,8 @@
             <label class="form-label" for="coNotes">Order notes <span class="optional">(optional)</span></label>
             <textarea class="form-control" id="coNotes" name="notes" rows="2"></textarea>
           </div>
-          <p class="form-demo-note"><i class="bi bi-credit-card-2-front" aria-hidden="true"></i> Please do not enter card details. This demo does not take payments.</p>
+          <p class="form-demo-note"><i class="bi bi-credit-card-2-front" aria-hidden="true"></i> Please do not enter
+            card details. This demo does not take payments.</p>
           <button class="btn btn-accent btn-lg w-100" type="submit">Review order</button>
         </form>
       </section>
@@ -637,7 +774,8 @@
         <div class="done-card">
           <i class="bi bi-check2-circle" aria-hidden="true"></i>
           <h3 class="h4" id="doneHeading" tabindex="-1">Demo order submitted</h3>
-          <p><strong>Nothing has been sent.</strong> This was a demonstration: the restaurant has not received your order and no payment was taken.</p>
+          <p><strong>Nothing has been sent.</strong> This was a demonstration: the restaurant has not received your
+            order and no payment was taken.</p>
           <div id="doneSummary" class="done-summary"></div>
           <button class="btn btn-accent mt-3" type="button" id="startOver">Start a new demo order</button>
         </div>
@@ -647,20 +785,26 @@
 
   <!-- ================================ LIGHTBOX ================================ -->
   <dialog class="lightbox" id="lightbox" aria-label="Photo viewer">
-    <button class="lightbox__close" type="button" id="lbClose" aria-label="Close photo viewer"><i class="bi bi-x-lg" aria-hidden="true"></i></button>
-    <button class="lightbox__nav lightbox__nav--prev" type="button" id="lbPrev" aria-label="Previous photo"><i class="bi bi-chevron-left" aria-hidden="true"></i></button>
+    <button class="lightbox__close" type="button" id="lbClose" aria-label="Close photo viewer"><i class="bi bi-x-lg"
+        aria-hidden="true"></i></button>
+    <button class="lightbox__nav lightbox__nav--prev" type="button" id="lbPrev" aria-label="Previous photo"><i
+        class="bi bi-chevron-left" aria-hidden="true"></i></button>
     <figure class="lightbox__fig">
       <img id="lbImg" alt="" width="1" height="1">
       <figcaption id="lbCap"></figcaption>
     </figure>
-    <button class="lightbox__nav lightbox__nav--next" type="button" id="lbNext" aria-label="Next photo"><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+    <button class="lightbox__nav lightbox__nav--next" type="button" id="lbNext" aria-label="Next photo"><i
+        class="bi bi-chevron-right" aria-hidden="true"></i></button>
   </dialog>
 
   <div class="toast-stack" id="toasts" role="status" aria-live="polite"></div>
 
-  <script src="assets/vendor/bootstrap/bootstrap.bundle.min.js"></script>
-  <script src="assets/js/asset-manifest.js"></script>
-  <script src="assets/js/menu-data.js"></script>
-  <script src="assets/js/main.js"></script>
+  <script src="shared/vendor/bootstrap/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/three.r149.min.js"></script>
+  <script src="js/asset-manifest.js"></script>
+  <script src="js/data.js"></script>
+  <script src="shared/js/main.js"></script>
+  <script src="js/burger.js"></script>
 </body>
+
 </html>
